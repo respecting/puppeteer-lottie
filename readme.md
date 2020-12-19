@@ -16,7 +16,7 @@ This module is also available as a [CLI](https://github.com/transitive-bullshit/
 npm install --save puppeteer-lottie
 ```
 
-If you want to generate **GIFs**, you must also install [APNGasm](http://apngasm.sourceforge.net/), [apng2gif](http://apng2gif.sourceforge.net/), and [ImageMagisk](https://imagemagick.org/script/download.php).
+If you want to generate **GIFs**, you must also install [APNGasm](http://apngasm.sourceforge.net/), [apng2gif](http://apng2gif.sourceforge.net/), and [ImageMagick](https://imagemagick.org/script/download.php).
 
 If you want to generate **MP4s**, you must also install [ffmpeg](https://ffmpeg.org/).
 
@@ -77,7 +77,7 @@ You must pass either `path` or `animationData` to specify the Lottie animation.
 -   An image to capture the first frame only (png or jpg)
 -   An image pattern (eg. sprintf format 'frame-%d.png' or 'frame-%012d.jpg')
 -   An mp4 video file (requires FFmpeg to be installed)
--   A GIF file (requires APNGasm, apng2gif and ImageMagisk to be installed)
+-   A GIF file (requires APNGasm, apng2gif and ImageMagick to be installed)
 
 Type: `function (opts): Promise`
 

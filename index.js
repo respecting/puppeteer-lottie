@@ -30,7 +30,7 @@ const injectLottie = `
  *   - An image to capture the first frame only (png or jpg)
  *   - An image pattern (eg. sprintf format 'frame-%d.png' or 'frame-%012d.jpg')
  *   - An mp4 video file (requires FFmpeg to be installed)
- *   - A GIF file (requires APNGasm, apng2gif and ImageMagisk to be installed)
+ *   - A GIF file (requires APNGasm, apng2gif and ImageMagick to be installed)
  *
  * @name renderLottie
  * @function
@@ -396,11 +396,11 @@ ${inject.body || ''}
       spinnerF.succeed()
     }
   } else if (isGif) {
-    const spinnerG = !quiet && ora(`Generating GIF with APNG Assembler, apng2gif, and ImageMagisk`).start()
+    const spinnerG = !quiet && ora(`Generating GIF with APNG Assembler, apng2gif, and ImageMagick`).start()
       const framePattern = tempOutput.replace('%d', '*');
       const escapePath = arg => arg.replace(/(\s+)/g, '\\$1').replace('\'', '\\\'')
       const cmd = `apngasm ${escapePath(output.replace('.gif', '.png'))} ${escapePath(framePattern)} 1 60 -kc -kp -z0`
-      execa.shell(cmd).then(()=>execa.shell(`apng2gif ${escapePath(output.replace('.gif', '.png'))} ${escapePath(output)}`).then(()=>execa.shell(`convert -delay 1.5 ${escapePath(output)} ${escapePath(output)}`))).then(()=>spinnerG.succeed()).then(()=>fs.rmdir(tempDir, {recursive:true})).then(()=>fs.mkdir(tempDir))
+      execa.shell(cmd).then(()=>execa.shell(`apng2gif ${escapePath(output.replace('.gif', '.png'))} ${escapePath(output)}`).then(()=>execa.shell(`convert -delay 1.5 ${escapePath(output)} ${escapePath(output)}`))).then(()=>fs.rmdir(tempDir, {recursive:true})).then(()=>fs.mkdir(tempDir)).then(()=>fs.unlink(output.replace('.gif', '.png'))).then(()=>spinnerG.succeed())
     }
 
   return {
