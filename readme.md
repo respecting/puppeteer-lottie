@@ -16,17 +16,9 @@ This module is also available as a [CLI](https://github.com/transitive-bullshit/
 npm install --save puppeteer-lottie
 ```
 
-If you want to generate **GIFs**, you must also install [gifski](https://gif.ski/). On macOS, you can run:
+If you want to generate **GIFs**, you must also install [APNGasm](https://apngasm.sourceforge.net/), [apng2gif](https://apng2gif.sourceforge.net/), and [ImageMagisk](https://imagemagick.org/script/download.php).
 
-```bash
-brew install gifski
-```
-
-If you want to generate **MP4s**, you must also install [ffmpeg](https://ffmpeg.org/). On macOS, you can run:
-
-```bash
-brew install ffmpeg
-```
+If you want to generate **MP4s**, you must also install [ffmpeg](https://ffmpeg.org/).
 
 ## Usage
 
@@ -85,7 +77,7 @@ You must pass either `path` or `animationData` to specify the Lottie animation.
 -   An image to capture the first frame only (png or jpg)
 -   An image pattern (eg. sprintf format 'frame-%d.png' or 'frame-%012d.jpg')
 -   An mp4 video file (requires FFmpeg to be installed)
--   A GIF file (requires Gifski to be installed)
+-   A GIF file (requires APNGasm, apng2gif and ImageMagisk to be installed)
 
 Type: `function (opts): Promise`
 
@@ -103,7 +95,6 @@ Type: `function (opts): Promise`
     -   `opts.puppeteerOptions` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional puppeteer launch settings
     -   `opts.ffmpegOptions` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional ffmpeg settings for
     crf, profileVideo and preset values
-    -   `opts.gifskiOptions` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Optional gifski settings (only for GIF outputs)
     -   `opts.style` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optional JS [CSS styles](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference) to apply to the animation container (optional, default `{}`)
     -   `opts.inject` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Optionally injects arbitrary string content into the head, style, or body elements. (optional, default `{}`)
         -   `opts.inject.head` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** Optionally injected into the document <head>

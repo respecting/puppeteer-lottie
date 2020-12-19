@@ -30,7 +30,7 @@ const injectLottie = `
  *   - An image to capture the first frame only (png or jpg)
  *   - An image pattern (eg. sprintf format 'frame-%d.png' or 'frame-%012d.jpg')
  *   - An mp4 video file (requires FFmpeg to be installed)
- *   - A GIF file (requires Gifski to be installed)
+ *   - A GIF file (requires APNGasm, apng2gif and ImageMagisk to be installed)
  *
  * @name renderLottie
  * @function
@@ -47,7 +47,6 @@ const injectLottie = `
  * @param {string} [opts.renderer='svg'] - Which lottie-web renderer to use
  * @param {object} [opts.rendererSettings] - Optional lottie renderer settings
  * @param {object} [opts.puppeteerOptions] - Optional puppeteer launch settings
- * @param {object} [opts.gifskiOptions] - Optional gifski settings (only for GIF outputs)
  * @param {object} [opts.style={}] - Optional JS [CSS styles](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Properties_Reference) to apply to the animation container
  * @param {object} [opts.inject={}] - Optionally injects arbitrary string content into the head, style, or body elements.
  * @param {string} [opts.inject.head] - Optionally injected into the document <head>
@@ -74,10 +73,6 @@ module.exports = async (opts) => {
       crf: 20,
       profileVideo: 'main',
       preset: 'medium'
-    },
-    gifskiOptions = {
-      quality: 80,
-      fast: false
     }
   } = opts
 
@@ -124,7 +119,7 @@ module.exports = async (opts) => {
 
   const tempDir = isGif ? tempy.directory() : undefined
   const tempOutput = isGif
-    ? path.join(tempDir, 'frame-%012d.png')
+    ? path.join(tempDir, 'frame%d.png')
     : output
   const frameType = (isJpg ? 'jpeg' : 'png')
   const isMultiFrame = isApng || isMp4 || /%d|%\d{2,3}d/.test(tempOutput)
@@ -401,33 +396,12 @@ ${inject.body || ''}
       spinnerF.succeed()
     }
   } else if (isGif) {
-    const spinnerG = !quiet && ora(`Generating GIF with Gifski`).start()
-
-    const framePattern = tempOutput.replace('%012d', '*')
-    const escapePath = arg => arg.replace(/(\s+)/g, '\\$1')
-
-    const params = [
-      '-o', escapePath(output),
-      '--fps', Math.min(gifskiOptions.fps || fps, 50), // most of viewers do not support gifs with FPS > 50
-      gifskiOptions.fast && '--fast',
-      '--quality', gifskiOptions.quality,
-      '--quiet',
-      escapePath(framePattern)
-    ].filter(Boolean)
-
-    const executable = process.env.GIFSKI_PATH || 'gifski'
-    const cmd = [ executable ].concat(params).join(' ')
-
-    await execa.shell(cmd)
-
-    if (spinnerG) {
-      spinnerG.succeed()
+    const spinnerG = !quiet && ora(`Generating GIF with APNG Assembler, apng2gif, and ImageMagisk`).start()
+      const framePattern = tempOutput.replace('%d', '*');
+      const escapePath = arg => arg.replace(/(\s+)/g, '\\$1').replace('\'', '\\\'')
+      const cmd = `apngasm ${escapePath(output.replace('.gif', '.png'))} ${escapePath(framePattern)} 1 60 -kc -kp -z0`
+      execa.shell(cmd).then(()=>execa.shell(`apng2gif ${escapePath(output.replace('.gif', '.png'))} ${escapePath(output)}`).then(()=>execa.shell(`convert -delay 1.5 ${escapePath(output)} ${escapePath(output)}`))).then(()=>spinnerG.succeed()).then(()=>fs.rmdir(tempDir, {recursive:true})).then(()=>fs.mkdir(tempDir))
     }
-  }
-
-  if (tempDir) {
-    await fs.remove(tempDir)
-  }
 
   return {
     numFrames,
