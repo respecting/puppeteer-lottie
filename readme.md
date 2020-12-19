@@ -16,7 +16,7 @@ This module is also available as a [CLI](https://github.com/transitive-bullshit/
 npm install --save puppeteer-lottie
 ```
 
-If you want to generate **GIFs**, you must also install [APNGasm](https://apngasm.sourceforge.net/), [apng2gif](https://apng2gif.sourceforge.net/), and [ImageMagisk](https://imagemagick.org/script/download.php).
+If you want to generate **GIFs**, you must also install [APNGasm](http://apngasm.sourceforge.net/), [apng2gif](http://apng2gif.sourceforge.net/), and [ImageMagisk](https://imagemagick.org/script/download.php).
 
 If you want to generate **MP4s**, you must also install [ffmpeg](https://ffmpeg.org/).
 
